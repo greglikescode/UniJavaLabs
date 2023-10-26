@@ -1,7 +1,5 @@
 package openworld.terrain;
 
-import javax.swing.plaf.metal.MetalBorders.TableHeaderBorder;
-
 import openworld.Coordinates;
 import openworld.Damage;
 import openworld.World;

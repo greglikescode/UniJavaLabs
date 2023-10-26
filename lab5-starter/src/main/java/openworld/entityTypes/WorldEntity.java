@@ -1,7 +1,5 @@
 package openworld.entityTypes;
 
-import java.util.ArrayList;
-
 import openworld.Coordinates;
 import openworld.Damage;
 import openworld.DamageType;
@@ -16,9 +14,8 @@ public class WorldEntity {
 
     protected World world;
     public boolean conscious;
-    public int vulnerability;
-
-
+    //                                      FIRE ICE  ELEC PHYS
+    public int[] vulnerability = new int[] {100, 100, 100, 100};
 
     // Task 3.3
     public WorldEntity(String name, Coordinates location, int maxHealth,  World world, Damage attack) {
@@ -28,16 +25,16 @@ public class WorldEntity {
         this.currentHealth = maxHealth;
         this.world = world;
         this.attack = attack;
-        this.vulnerability = 100;
-
 
     }
     
     // Task 3.3
     public void takeDamage(Damage damage) {
 
-        System.out.println(name+" takes "+damage.getAmount()+damage.getDamageType()+" damage.");
-        currentHealth -= damage.getAmount();
+        int currentVulnerabilty = getVulnerability(damage.getDamageType());
+        double actualDamage = (damage.getAmount() * currentVulnerabilty) / 100;
+        currentHealth -= actualDamage;
+        System.out.println(name+" takes "+actualDamage+" "+damage.getDamageType()+" damage.");
         if (currentHealth <= 0){
             currentHealth = 0;
             System.out.println(name+" has fainted.");
@@ -45,27 +42,42 @@ public class WorldEntity {
         }
     }
 
-    
     // Task 3.3
+    // IN THE VULNERABILITY ARRAY:
+    // FIRE = index 0
+    // ICE = index 1
+    // ELECTRIC = index 2
+    // PHYSICAL = index 3
     public void changeVulnerability(DamageType damageType, int newVulnerabilty){
-
-
-
-
+        int typeArrayIndex = damageTypeToIndex(damageType);
+        vulnerability[typeArrayIndex] = newVulnerabilty;
     }
 
     // Task 3.3
-    public int getVulnerability(DamageType damageType)
-    {
-        return 0;
+    public int getVulnerability(DamageType damageType){
+        int typeArrayIndex = damageTypeToIndex(damageType);
+        return vulnerability[typeArrayIndex];
+    }
 
+    // Task 3.3
+    public int damageTypeToIndex(DamageType damageType){
+        int selectedVuln = 0;
+        if (damageType == DamageType.FIRE) {
+            selectedVuln = 0;
+        } else if (damageType == DamageType.ICE) {
+            selectedVuln = 1;
+        } else if (damageType == DamageType.ELECTRIC) {
+            selectedVuln = 2;
+        } else if (damageType == DamageType.PHYSICAL) {
+            selectedVuln = 3;
+        }
+        return selectedVuln;
     }
 
     public void attack(WorldEntity traveller) {
         traveller.takeDamage(attack);
     }
-
-    
+   
     public void encounter(WorldEntity traveller) {
         System.out.println("You encounter name: " + name);
         System.out.println("Coordinate: [" + location.toString()+ "]");
@@ -104,10 +116,6 @@ public class WorldEntity {
     public void setCurrentHealth(int health) {
         currentHealth=health;
     }
-
-public static void main(String[] args) {
-    System.out.println("balls");
-}
 
 }
 

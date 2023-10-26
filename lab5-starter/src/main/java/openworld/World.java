@@ -2,7 +2,6 @@ package openworld;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 
 import openworld.adventurer.Adventurer;
 import openworld.characters.Healer;
@@ -10,7 +9,9 @@ import openworld.characters.NPC;
 import openworld.characters.Wizard;
 
 import openworld.terrain.Grasslands;
+import openworld.terrain.Mountain;
 import openworld.terrain.Terrain;
+import openworld.terrain.Volcano;
 import openworld.entityTypes.WorldEntity;
 import openworld.monsters.Blob;
 import openworld.monsters.Monster;
@@ -54,7 +55,6 @@ public class World {
         int blobNum = 1;
         // while x and y are within the world boundaries.
         for (int x = 0; x <= xDimension; x++) {
-
             for (int y = 0; y <= yDimension; y++) {
                 if (coordsCount == 7){
                     if (skeleton){
@@ -119,41 +119,32 @@ public class World {
 
     // Task 2.1
     public void printWorld() {
-        for (int x=xDimension;x>=0;x--) {
+        for (int x = xDimension-1; x >= 0;x--) {
             String yLine = "";
-            for (int y = 0;y<=yDimension;y++) {
-                String terrainName = "";
-                String monsterName = "";
-                String npcName = "";
-                String adventurerName = "";
+            for (int y = 0; y <= yDimension-1; y++) {
                 String coord = "";
-                for(Terrain t : terrain) {
-                    if (t.getLocation().getX()==x && t.getLocation().getY()==y) {
-                        terrainName = t.getName();
-                        char terrainChar = terrainName.charAt(0);
-                        coord += "[" + terrainChar;
+                for(Terrain land : terrain) {
+                    if (land.getLocation().getX()==x && land.getLocation().getY()==y) {
+                        char terrainChar = land.getName().charAt(0);
+                        coord += terrainChar;
                         break;
                     }
                 }
-                for(Monster m : monsters) {
-                    if (m.getLocation().getX()==x && m.getLocation().getY()==y) {
-                        monsterName = m.getName();
-                        coord += ":" + monsterName;
+                for(Monster googly : monsters) {
+                    if (googly.getLocation().getX()==x && googly.getLocation().getY()==y) {
+                        coord += ":" + googly.getName();
                         break;
                     }
                 }
                 for (NPC npc : nonPlayerCharacters) {
                     if (npc.getLocation().getX()==x && npc.getLocation().getY()==y) {
-                        npcName = npc.getName();
-                        coord += ":"+npcName;
+                        coord += ":"+npc.getName();
                         break;
                     }
                 }
                 if (adventurer.getLocation().getX() == x && adventurer.getLocation().getY() == y) {
-                    adventurerName = adventurer.getName();
-                    coord += ":"+adventurerName;
+                    coord += ":"+adventurer.getName();
                 }
-                coord += "]";
                 int spacing = 20 - coord.length();
                 String spaces = String.format("%" + spacing + "s","");
                 yLine += coord + spaces;
@@ -212,17 +203,6 @@ public class World {
                 }
             }
         }   
-
-        // DE-BUG
-        System.out.println("AT co-ords "+currentLocation.getX()+","+currentLocation.getY()+":");
-        System.out.println(currentTerrain.getName()); 
-        if (currentMonster != null) {
-            System.out.println(currentMonster.getName());
-        }
-        if (currentNPC != null) {
-            System.out.println(currentNPC.getName());
-        }
-
         currentTerrain.encounter(traveller);
 
         if (currentMonster != null){
@@ -245,9 +225,24 @@ public class World {
 
     // Task 2.2
     public static void main(String[] args) {
+        // Task 2.2 Creating a 7 by 7 world and printing it out
         World zorpWorld = new World(7, 7);
         zorpWorld.initaliseWorld();
+        zorpWorld.printWorld();
 
+        // Task 1.1 Testing Mountain and Volcano classes
+        Mountain mountain = new Mountain("Everest", new Coordinates(3, 4), 1000, zorpWorld, null);
+        Volcano volcano = new Volcano("Vesuvius", new Coordinates(1, 1), 1000, zorpWorld, null);
+
+        System.out.println(zorpWorld.getAdventurer().getCurrentHealth());
+        mountain.encounter(zorpWorld.getAdventurer());
+        System.out.println(zorpWorld.getAdventurer().getCurrentHealth());
+
+        System.out.println(zorpWorld.getAdventurer().getLocation().getX()+","+zorpWorld.getAdventurer().getLocation().getX());
+        volcano.encounter(zorpWorld.getAdventurer());
+        System.out.println(zorpWorld.getAdventurer().getLocation().getX()+","+zorpWorld.getAdventurer().getLocation().getX());
+
+        // Running the world, which basically tests everything
         System.out.println("Run #1");
         zorpWorld.run();
         zorpWorld.printWorld();
@@ -264,7 +259,6 @@ public class World {
         System.out.println("End Run #2");
 
         System.out.println(zorpWorld.getTerrain().get(0).getLocation().getX()+","+zorpWorld.getTerrain().get(0).getLocation().getY());
-
     }
 
 // GETTERS AND SETTERS

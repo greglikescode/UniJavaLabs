@@ -98,5 +98,4 @@ public class Monster extends TravellingWorldEntity{
         this.awake=awake;
     }
 
-    
 }
