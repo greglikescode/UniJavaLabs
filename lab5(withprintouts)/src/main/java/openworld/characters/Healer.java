@@ -15,13 +15,17 @@ public class Healer extends NPC {
 
     public void encounter(WorldEntity traveller)
     {
+        System.out.println("The healer specific encounter has just been called");
         if(traveller instanceof Adventurer)
         {
             traveller.setCurrentHealth(traveller.getMaxHealth());
+            System.out.println("Healed the adventurer");
         }
         else if(traveller instanceof Monster)
         {
             world.battle(this,traveller);
+        } else {
+            System.out.println(this.getName()+" has no interaction with "+traveller.getName());
         }
     }
 }

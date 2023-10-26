@@ -16,7 +16,6 @@ public class Wizard extends NPC{
 
     public void encounter(WorldEntity traveller)
     {
-        System.out.println("The wizard specific encounter has just been called");
         if(traveller instanceof Adventurer)
         {
             Adventurer adventurer = (Adventurer)traveller;
@@ -26,7 +25,6 @@ public class Wizard extends NPC{
         {
             world.battle(this,traveller);
         } else {
-            System.out.println(this.getName()+" has no interaction with "+traveller.getName());
         }
     }  
 }

@@ -174,6 +174,8 @@ public class World {
 
     // Task 3.2
     public void resolveMove(WorldEntity traveller) {
+        
+        System.out.println("The traveller calling resloveMove() is "+traveller.getName());
         Coordinates currentLocation = new Coordinates(traveller.getLocation().getX(), traveller.getLocation().getY());
         Terrain currentTerrain = null;
         Monster currentMonster = null;
@@ -227,6 +229,36 @@ public class World {
         World zorpWorld = new World(7, 7);
         zorpWorld.initaliseWorld();
         zorpWorld.printWorld();
+
+        // Task 1.1 Testing Mountain and Volcano classes
+        Mountain mountain = new Mountain("Everest", new Coordinates(3, 4), 1000, zorpWorld, null);
+        Volcano volcano = new Volcano("Vesuvius", new Coordinates(1, 1), 1000, zorpWorld, null);
+
+        System.out.println(zorpWorld.getAdventurer().getCurrentHealth());
+        mountain.encounter(zorpWorld.getAdventurer());
+        System.out.println(zorpWorld.getAdventurer().getCurrentHealth());
+
+        System.out.println(zorpWorld.getAdventurer().getLocation().getX()+","+zorpWorld.getAdventurer().getLocation().getX());
+        volcano.encounter(zorpWorld.getAdventurer());
+        System.out.println(zorpWorld.getAdventurer().getLocation().getX()+","+zorpWorld.getAdventurer().getLocation().getX());
+
+        // Running the world, which basically tests everything
+        System.out.println("Run #1");
+        zorpWorld.run();
+        zorpWorld.printWorld();
+        System.out.println("End Run #1");
+
+        System.out.println("Run #2");
+        zorpWorld.run();
+        zorpWorld.printWorld();
+        System.out.println("End Run #2");
+
+        System.out.println("Run #3");
+        zorpWorld.run();
+        zorpWorld.printWorld();
+        System.out.println("End Run #2");
+
+        System.out.println(zorpWorld.getTerrain().get(0).getLocation().getX()+","+zorpWorld.getTerrain().get(0).getLocation().getY());
     }
 
 // GETTERS AND SETTERS

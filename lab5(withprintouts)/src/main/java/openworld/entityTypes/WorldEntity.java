@@ -34,8 +34,10 @@ public class WorldEntity {
         int currentVulnerabilty = getVulnerability(damage.getDamageType());
         double actualDamage = (damage.getAmount() * currentVulnerabilty) / 100;
         currentHealth -= actualDamage;
+        System.out.println(name+" takes "+actualDamage+" "+damage.getDamageType()+" damage.");
         if (currentHealth <= 0){
             currentHealth = 0;
+            System.out.println(name+" has fainted.");
             conscious = false;
         }
     }
