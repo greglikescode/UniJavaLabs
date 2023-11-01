@@ -38,7 +38,22 @@ public class Coordinates {
         return STATIONARY;
     }
 
+    public ArrayList<String> printSafeMove(World world){
+        ArrayList<String> safeMoves = new ArrayList<String>();
 
+        if (x + 1 <= world.getxDimension()) {
+            safeMoves.add("North");
+        } if (y + 1 <= world.getyDimension()) {
+            safeMoves.add("East");
+        } if (x - 1 >= 0) {
+            safeMoves.add("South");
+        } if (y - 1 >= 0) {
+            safeMoves.add("West");
+        } if (safeMoves.size() == 0) {
+            safeMoves.add("None");
+        }
+        return safeMoves;
+    }
 
 
     public Coordinates getNextStepTo(Coordinates destination) {

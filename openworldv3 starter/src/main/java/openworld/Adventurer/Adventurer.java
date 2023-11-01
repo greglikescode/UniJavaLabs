@@ -41,19 +41,52 @@ public class Adventurer extends TravellingWorldEntity {
     }
 
     public void printOptions() {
-        System.out.println("This is where the adventurers options will go!!!");
+        ArrayList<String> safeMoves = world.getAdventurer().getLocation().printSafeMove(world);
+        int j = 0;
+
+        System.out.println("The adventurers safe moves are...");
+        for (int i = 0; i < safeMoves.size(); i++) {
+            System.out.println("["+(i+1)+"] - "+safeMoves.get(i).toString());
+            j = i+1;
+        }
+        System.out.println("Location of all the NPC's on the map...");
+        for (int i = 0; i < world.getNonPlayerCharacters().size(); i++) {
+            System.out.println("["+(j+1)+"] - "+world.getNonPlayerCharacters().get(i).getName()+" at "+world.getNonPlayerCharacters().get(i).getLocation().toString());
+            j++;
+        }
+
     }
 
-    public void resolveTurn(){
+    public void resolveTurn(int selection){
         System.out.println("The adventurers move was resolved!!!");
-    }
+        ArrayList<String> safeMoves = world.getAdventurer().getLocation().printSafeMove(world);
 
+        String move = safeMoves.get((selection-1));
+        System.out.println("Steve has selected to move "+move);
+
+        if (move == "North"){
+            world.getAdventurer().move(new Coordinates(1, 0));
+        } else if (move == "East"){
+            world.getAdventurer().move(new Coordinates(0, 1));
+        } else if (move == "South"){
+            world.getAdventurer().move(new Coordinates(-1, 0));
+        } else if (move == "West"){
+            world.getAdventurer().move(new Coordinates(0, -1));
+        }
+    }
     public void takeTurn() {
         printOptions();
+        System.out.println("Enter your input here: ");
         Scanner userInput = new Scanner(System.in);
         while (!userInput.hasNext());
-        int selection=(Integer.parseInt(userInput.nextLine()));
-        resolveTurn();
+        try{
+            int selection=(Integer.parseInt(userInput.nextLine()));
+            System.out.println("The users input was: "+selection);
+            resolveTurn(selection);
+        } catch (Exception e) {
+            System.out.println("The input could not be read. "+e.getMessage());
+        }
+        
      
     }
 
