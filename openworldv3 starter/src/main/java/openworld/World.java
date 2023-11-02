@@ -14,7 +14,8 @@ import openworld.terrain.Mountain;
 import openworld.terrain.Terrain;
 import openworld.terrain.Volcano;
 import openworld.entityTypes.TravellingWorldEntity;
-import openworld.entityTypes.WorldEntity;
+import openworld.items.Item;
+import openworld.items.ItemType;
 import openworld.monsters.Blob;
 import openworld.monsters.Monster;
 import openworld.monsters.Skeleton;
@@ -27,6 +28,8 @@ public class World {
     private ArrayList<Monster> monsters = new ArrayList<>();
 
     private ArrayList<NPC> nonPlayerCharacters = new ArrayList<>();
+    private ArrayList<Item> items = new ArrayList<>();
+
     private Adventurer adventurer;
     public boolean gameOver = false;
 
@@ -57,6 +60,7 @@ public class World {
         generateTerrain();
         generateMonsters();
         generateCharacters();
+        generateItems();
         adventurer = new Adventurer("Bob", new Coordinates(0, 0), 100, this, new Damage(10, DamageType.PHYSICAL));
     }
 
@@ -91,6 +95,11 @@ public class World {
                         } else {
                             entities.add(getShortenedName(npc.getName()).toUpperCase());
                         }
+                    }
+                }
+                for (Item item : items) {
+                    if (item.getLocation().equals(currentLocation)) {
+                        entities.add(getShortenedName(item.getName()));
                     }
                 }
                 if (!entities.isEmpty()) {
@@ -154,8 +163,8 @@ public class World {
     }
 
     public void resolveMove(TravellingWorldEntity traveller) {
-        ArrayList<Terrain> terainHere = getTerrainHere(traveller.getLocation());
-        for (Terrain t : terainHere) {
+        ArrayList<Terrain> terrainHere = getTerrainHere(traveller.getLocation());
+        for (Terrain t : terrainHere) {
             if (t instanceof Grasslands) {
                 t = (Grasslands) t;
                 t.encounter(traveller);
@@ -181,17 +190,33 @@ public class World {
                 m.encounter(traveller);
             }
         }
-        ArrayList<NPC> charactersHere = getNPCHere(traveller.getLocation());
-        for (NPC npc : charactersHere) {
-            if (npc.equals(traveller)) {
+        if (this.getAdventurer().isHealerInteraction() || this.getAdventurer().isWizardInteraction()){
+            ArrayList<NPC> charactersHere = getNPCHere(traveller.getLocation());
+            for (NPC npc : charactersHere) {
+                if (npc.equals(traveller)) {
 
-            } else if (npc instanceof Wizard) {
-                npc = (Wizard) npc;
-                npc.encounter(traveller);
-            } else if (npc instanceof Healer) {
-                npc = (Healer) npc;
-                npc.encounter(traveller);
+                } else if (npc instanceof Wizard) {
+                    npc = (Wizard) npc;
+                    if (this.getAdventurer().isWizardInteraction()){
+                        npc.encounter(traveller);
+                    } else {
+                        System.out.println(traveller.getName()+" did not choose to interact with "+npc.getName());
+                    }
+                } else if (npc instanceof Healer) {
+                    npc = (Healer) npc;
+                    if (this.getAdventurer().isHealerInteraction()){
+                        npc.encounter(traveller);
+                    } else {
+                        System.out.println(traveller.getName()+" did not choose to interact with "+npc.getName());
+                    }
+                }
             }
+        }
+        if (this.getAdventurer().isItemInteraction()) {
+            ArrayList<Item> itemHere = getItemHere(traveller.getLocation());
+                for (Item item : itemHere) {
+                    item.encounter(traveller);
+        }    
         }
     }
 
@@ -225,6 +250,16 @@ public class World {
         return terrainHere;
     }
 
+    private ArrayList<Item> getItemHere(Coordinates location) {
+        ArrayList<Item> itemHere = new ArrayList<>();
+        for (Item item : items) {
+            if (item.getLocation().equals(location)) {
+                itemHere.add(item);
+            }
+        }
+        return itemHere;
+    }
+
     public void battle(TravellingWorldEntity location, TravellingWorldEntity traveller) {
         System.out.println("----BATTLE-----");
         System.out.println(traveller.getName() + " is fighting " + location.getName());
@@ -253,8 +288,11 @@ public class World {
     public static void main(String[] args) {
         World w = new World(7, 7);
         w.initaliseWorld();
-        w.run();
+        w.nonPlayerCharacters.add(new Healer("Dummy H", new Coordinates(0, 0), 15, w, new Damage(5, DamageType.PHYSICAL), w.randomCoordinates()));
+        w.nonPlayerCharacters.add(new Wizard("Dummy W", new Coordinates(0, 0), 15, w, new Damage(5, DamageType.PHYSICAL), w.randomCoordinates()));
+        w.items.add(new Item("Dummy W", new Coordinates(0, 0), 5, w, new Damage(0, DamageType.PHYSICAL), "A sharp sword!", ItemType.WEAPON, 1));
 
+        w.run();
     }
 
     public void generateTerrain() {
@@ -310,7 +348,7 @@ public class World {
     public void generateCharacters() {
         int healerCount = 0;
         int wizardCount = 0;
-        int frequency = 15;
+        int frequency = 9;
         int countUp = 0;
         for (int x = 0; x <= xDimension; x++) {
             for (int y = 0; y <= yDimension; y++) {
@@ -325,6 +363,29 @@ public class World {
                         nonPlayerCharacters.add(new Wizard("Wizard " + wizardCount, new Coordinates(x, y), 20, this,
                                 new Damage(8, DamageType.PHYSICAL), randomCoordinates()));
                         wizardCount++;
+                        countUp = 0;
+                    }
+                }
+            }
+        }
+    }
+
+    private void generateItems() {
+        int weaponCount = 0;
+        int armourCount = 0;
+        int frequency = 7;
+        int countUp = 0;
+        for (int x = 0; x <= xDimension; x++) {
+            for (int y = 0; y <= yDimension; y++) {
+                countUp++;
+                if (countUp == frequency) {
+                    if (weaponCount <= armourCount) {
+                        items.add(new Item("Weapon"+weaponCount, randomCoordinates(), 5, this, new Damage(0, DamageType.PHYSICAL), "A sharp sword!", ItemType.WEAPON, 1));
+                        weaponCount++;
+                        countUp = 0;
+                    } else {
+                        items.add(new Item("Armour"+armourCount, randomCoordinates(), 5, this, new Damage(0, DamageType.PHYSICAL), "Shiny armour!", ItemType.ARMOUR, 2));
+                        armourCount++;
                         countUp = 0;
                     }
                 }
@@ -363,6 +424,10 @@ public class World {
 
     public ArrayList<NPC> getNonPlayerCharacters() {
         return nonPlayerCharacters;
+    }
+
+    public ArrayList<Item> getItems() {
+        return items;
     }
 
     public void setGameOver(boolean gameOver) {

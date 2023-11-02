@@ -16,6 +16,7 @@ public abstract class TravellingWorldEntity extends WorldEntity{
 
     public void move(Coordinates vector)
     {
+        
         System.out.println(name+" moves");
         location.addCoordinates(vector);
         world.resolveMove(this);

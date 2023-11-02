@@ -4,7 +4,6 @@ import openworld.Coordinates;
 import openworld.Damage;
 import openworld.World;
 import openworld.entityTypes.TravellingWorldEntity;
-import openworld.entityTypes.WorldEntity;
 
 
 public abstract class NPC extends TravellingWorldEntity {
