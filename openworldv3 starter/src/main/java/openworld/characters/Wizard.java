@@ -21,6 +21,8 @@ public class Wizard extends NPC{
         {
             Adventurer adventurer = (Adventurer)traveller;
             adventurer.addAttack(new Damage(10, DamageType.FIRE));
+
+            // Printing Adventurers new attacks to confirm...
             System.out.println(this.getName()+" added attack to "+world.getAdventurer().getName()+"\nAdventurers new attacks are...");
             for (int i = 0; i < world.getAdventurer().getAttacks().length; i++) {
                 if (world.getAdventurer().getAttacks()[i] != null){

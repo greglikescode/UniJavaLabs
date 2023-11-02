@@ -14,8 +14,10 @@ import openworld.terrain.Mountain;
 import openworld.terrain.Terrain;
 import openworld.terrain.Volcano;
 import openworld.entityTypes.TravellingWorldEntity;
+import openworld.items.Armour;
 import openworld.items.Item;
 import openworld.items.ItemType;
+import openworld.items.Sword;
 import openworld.monsters.Blob;
 import openworld.monsters.Monster;
 import openworld.monsters.Skeleton;
@@ -44,12 +46,19 @@ public class World {
             System.out.println("-------------------------------");
             System.out.println("TURN:" + turnTimer);
             System.out.println("-------------------------------");
+            this.getAdventurer().getInventory();
+            this.getAdventurer().getAttacks();
             printWorld();
             adventurer.takeTurn();
             nonPlayerCharactersMove();
             monsterMove();
             System.out.println("Adventurer:"+ adventurer.toString());
             turnTimer++;
+            if (getAdventurer().getLocation().getX() == 7 && getAdventurer().getLocation().getY() == 7) {
+                System.out.println("===== ADVENTURER REACHED GOAL =====");
+                setGameOver(true);
+                
+            }
         }
         System.out.println("Game Over!");
     }
@@ -57,6 +66,7 @@ public class World {
 
 
     public void initaliseWorld() {
+        System.out.println("Hello! This is my Java Lab 6.\nTask 3.1: Items\nTask 3.2: Using Items\nTask 3.3: Game over + Inventory");
         generateTerrain();
         generateMonsters();
         generateCharacters();
@@ -276,6 +286,7 @@ public class World {
         }
         if (location.isConscious()) {
             System.out.println(location.getName().toUpperCase() + " IS VICTORIOUS");
+            
         } else if (traveller.isConscious()) {
             System.out.println(traveller.getName().toUpperCase() + " IS VICTORIOUS");
         } else {
@@ -380,11 +391,11 @@ public class World {
                 countUp++;
                 if (countUp == frequency) {
                     if (weaponCount <= armourCount) {
-                        items.add(new Item("Weapon"+weaponCount, randomCoordinates(), 5, this, new Damage(0, DamageType.PHYSICAL), "A sharp sword!", ItemType.WEAPON, 1));
+                        items.add(new Sword("Sword "+weaponCount, randomCoordinates(), 5, this, new Damage(0, DamageType.PHYSICAL), "A sharp sword!", ItemType.WEAPON, 1));
                         weaponCount++;
                         countUp = 0;
                     } else {
-                        items.add(new Item("Armour"+armourCount, randomCoordinates(), 5, this, new Damage(0, DamageType.PHYSICAL), "Shiny armour!", ItemType.ARMOUR, 2));
+                        items.add(new Armour("Armour "+armourCount, randomCoordinates(), 5, this, new Damage(0, DamageType.PHYSICAL), "Shiny armour!", ItemType.ARMOUR, 2));
                         armourCount++;
                         countUp = 0;
                     }

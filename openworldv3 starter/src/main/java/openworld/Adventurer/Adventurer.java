@@ -17,7 +17,9 @@ public class Adventurer extends TravellingWorldEntity {
     private Damage[] attacks = new Damage[3];
     // Adventurer has an inventory space of 3...
     public Item[] inventory = new Item[3];
+
     private int totalAttacks = 1;
+    private int totalInventory = 0;
     public boolean healerInteraction = false;
     public boolean wizardInteraction = false;
     public boolean itemInteraction = false;
@@ -34,6 +36,18 @@ public class Adventurer extends TravellingWorldEntity {
         }
     }
 
+    public void addToInventory(Item item) {
+        if (totalInventory < inventory.length) {
+            System.out.println("Adding"+item+" to "+this.getName()+"'s inventory!!!");
+            inventory[totalInventory] = item;
+            totalInventory++;
+            // Get the item off the map
+            item.setLocation(new Coordinates(-1, -1));
+        } else {
+            System.out.println("Cannot add to inventory!!! Inventory full!");
+        }
+    }
+
     @Override
     public void attack(WorldEntity target) {
         for (int i = 0; i < totalAttacks; i++) {
@@ -42,6 +56,17 @@ public class Adventurer extends TravellingWorldEntity {
     }
 
     public Damage[] getAttacks() {
+        System.out.println(name+"'s Attacks:");
+        int counter = 0;
+        for (int i = 0; i < attacks.length; i++) {
+            if (attacks[i] != null) {
+                System.out.println(attacks[i].getDamageType()+" "+attacks[i].getAmount());
+                counter++;
+            }
+        }
+        if(counter == 0){
+            System.out.println("Somehow, "+name+" has no attacks");
+        }
         return attacks;
     }
 
@@ -100,7 +125,7 @@ public class Adventurer extends TravellingWorldEntity {
             } else if (move == "Get Spell"){
                 this.setWizardInteraction(true);;
                 this.move(new Coordinates(0, 0));
-            } else if (move == "Pick up Item"){
+            } else if (move == "Pick Up Item"){
                 this.setItemInteraction(true);
                 this.move(new Coordinates(0, 0));
             }
@@ -153,4 +178,20 @@ public class Adventurer extends TravellingWorldEntity {
         this.itemInteraction = itemInteraction;
     }
 
+    public Item[] getInventory() {
+        int counter = 0;
+        System.out.println(getName()+"'s Inventory:");
+
+        for (int i = 0; i < inventory.length; i++) {    
+            if (inventory[i] != null) {
+                System.out.println(inventory[i].getName()+" "+inventory[i].getDescription());
+                counter++;
+            }
+        }
+        if (counter == 0) {
+                System.out.println("Inventory empty!");
+        }
+        
+        return inventory;
+    }
 }

@@ -2,6 +2,8 @@ package openworld.items;
 
 import openworld.Coordinates;
 import openworld.Damage;
+import openworld.DamageType;
+import openworld.Adventurer.Adventurer;
 import openworld.World;
 import openworld.entityTypes.TravellingWorldEntity;
 import openworld.entityTypes.WorldEntity;
@@ -20,7 +22,13 @@ public class Item extends WorldEntity{
     @Override
     public void encounter(TravellingWorldEntity traveller)
     {
-        
+        super.encounter(traveller);
+        if(traveller instanceof Adventurer){
+
+            Adventurer adventurer = (Adventurer)traveller;
+            adventurer.addToInventory(this);
+
+        }
     }
 
     public String getName() {
@@ -41,6 +49,10 @@ public class Item extends WorldEntity{
 
     public Coordinates getLocation() {
         return location;
+    }
+
+    public void setLocation(Coordinates location){
+        this.location = location;
     }
 
 }
