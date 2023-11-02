@@ -20,7 +20,6 @@ public class Coordinates {
     public Coordinates(int x, int y) {
         this.x = x;
         this.y = y;
-        System.out.println("boobs");
     }
 
     public void addCoordinates(Coordinates vector) {
