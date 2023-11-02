@@ -6,6 +6,8 @@ import openworld.Damage;
 import openworld.DamageType;
 import openworld.World;
 import openworld.Adventurer.Adventurer;
+import openworld.items.Item;
+import openworld.items.Sword;
 
 public class WorldEntity {
     protected String name;
@@ -36,10 +38,38 @@ public class WorldEntity {
     
 
     public void takeDamage(Damage damage) {
-        
+        System.out.println("TAKE DAMAGE HAS BEEN CALLED");
         int amount = damage.getAmount()*getDamageVulnerability(damage.getDamageType())/100;
         if (amount > 0) {
             this.currentHealth -= amount;
+            if (this.currentHealth < 0) {
+                this.currentHealth = 0;
+                conscious=false;
+            }
+        }
+    }
+
+    public void takeDamageSpecial(Damage damage,Item[] inventory) {
+        System.out.println("TAKE SPECIAL DAMAGE HAS BEEN CALLED");
+        Item equippedItem = null;
+        // Scan the inventory for weapons
+        for (int i = 0; i < inventory.length; i++) {
+            if (inventory[i] != null){
+                if (inventory[i] instanceof Sword) {
+                    equippedItem = inventory[i];
+                }
+            }
+        }
+
+        int amount = damage.getAmount()*getDamageVulnerability(damage.getDamageType())/100;
+        if (amount > 0) {
+            if (equippedItem != null) {
+                this.currentHealth -= (amount + ((Sword)equippedItem).getAmount());
+                System.out.println(name+" takes "+(amount + ((Sword)equippedItem).getAmount())+" damage");
+            } else {
+                this.currentHealth -= amount;
+                System.out.println(name+" takes "+amount+" damage");
+            }
             if (this.currentHealth < 0) {
                 this.currentHealth = 0;
                 conscious=false;
@@ -83,10 +113,20 @@ public class WorldEntity {
     }
 
 
+    
+    public void attack(WorldEntity victim, WorldEntity attacker){
 
-    public void attack(WorldEntity traveller)
-    {
-        traveller.takeDamage(attack);
+        System.out.println("attacker: "+attacker);
+        System.out.println("victim: "+victim);
+        System.out.println(attacker instanceof Adventurer);
+
+        if (attacker instanceof Adventurer) {
+            System.out.println("CALLING SPECIAL ATTACK");
+            victim.takeDamageSpecial(attack,((Adventurer) attacker).getInventory());
+        } else {
+            System.out.println("CALLING NORMAL ATTACK");
+            victim.takeDamage(attack);
+        }
     } 
 
     

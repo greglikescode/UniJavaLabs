@@ -10,7 +10,9 @@ import openworld.characters.Healer;
 import openworld.characters.Wizard;
 import openworld.entityTypes.TravellingWorldEntity;
 import openworld.entityTypes.WorldEntity;
+import openworld.items.Armour;
 import openworld.items.Item;
+import openworld.items.Sword;
 
 public class Adventurer extends TravellingWorldEntity {
 
@@ -19,10 +21,11 @@ public class Adventurer extends TravellingWorldEntity {
     public Item[] inventory = new Item[3];
 
     private int totalAttacks = 1;
-    private int totalInventory = 0;
+    private int totalInventory = 1;
     public boolean healerInteraction = false;
     public boolean wizardInteraction = false;
-    public boolean itemInteraction = false;
+    public boolean swordInteraction = false;
+    public boolean armourInteraction = false;
 
     public Adventurer(String name, Coordinates location, int maxHealth, World world, Damage attack) {
         super(name, location, maxHealth, world, attack);
@@ -38,9 +41,12 @@ public class Adventurer extends TravellingWorldEntity {
 
     public void addToInventory(Item item) {
         if (totalInventory < inventory.length) {
-            System.out.println("Adding"+item+" to "+this.getName()+"'s inventory!!!");
+            System.out.println("Adding"+item+" to "+this.getName()+"'s inventory!!! It has size"+item.getSize());
             inventory[totalInventory] = item;
+
+            // If item is size 2, it takes up two inventory spaces...
             totalInventory++;
+
             // Get the item off the map
             item.setLocation(new Coordinates(-1, -1));
         } else {
@@ -49,7 +55,7 @@ public class Adventurer extends TravellingWorldEntity {
     }
 
     @Override
-    public void attack(WorldEntity target) {
+    public void attack(WorldEntity target,WorldEntity traveller) {
         for (int i = 0; i < totalAttacks; i++) {
             target.takeDamage(attacks[i]);
         }
@@ -70,6 +76,20 @@ public class Adventurer extends TravellingWorldEntity {
         return attacks;
     }
 
+    public Item[] getInventory() {
+        System.out.println(getName()+"'s Inventory:");
+
+        System.out.println(inventory[0]+" "+inventory[1]+" "+inventory[2]);
+
+        for (int i = 0; i < inventory.length; i++) {    
+            if (inventory[i] != null) {
+                System.out.println(inventory[i].getName()+" "+inventory[i].getDescription());
+            }
+        }
+        
+        return inventory;
+    }
+
     public ArrayList<String> printOptions() {
         // First, we get the moves that the adventurer is able to go on the map...
         ArrayList<String> options = world.getAdventurer().getLocation().printSafeMove(world);
@@ -88,7 +108,11 @@ public class Adventurer extends TravellingWorldEntity {
         // Finally, we add all items on the same square as the adventurer...
         for (int i = 0; i < world.getItems().size(); i++) {
             if (world.getItems().get(i).getLocation().equals(world.getAdventurer().getLocation())){
-                options.add("Pick Up Item");
+                if (world.getItems().get(i) instanceof Sword){
+                    options.add("Pick Up Sword");
+                } else if (world.getItems().get(i) instanceof Armour){
+                    options.add("Pick Up Armour");
+                }
             }
         }
 
@@ -125,8 +149,11 @@ public class Adventurer extends TravellingWorldEntity {
             } else if (move == "Get Spell"){
                 this.setWizardInteraction(true);;
                 this.move(new Coordinates(0, 0));
-            } else if (move == "Pick Up Item"){
-                this.setItemInteraction(true);
+            } else if (move == "Pick Up Sword"){
+                this.setSwordInteraction(true);
+                this.move(new Coordinates(0, 0));
+            } else if (move == "Pick Up Armour"){
+                this.setArmourInteraction(true);
                 this.move(new Coordinates(0, 0));
             }
             
@@ -170,28 +197,19 @@ public class Adventurer extends TravellingWorldEntity {
         this.wizardInteraction = wizardInteraction;
     }
 
-    public boolean isItemInteraction() {
-        return itemInteraction;
+    public boolean isSwordInteraction() {
+        return swordInteraction;
     }
 
-    public void setItemInteraction(boolean itemInteraction) {
-        this.itemInteraction = itemInteraction;
+    public void setSwordInteraction(boolean swordInteraction) {
+        this.swordInteraction = swordInteraction;
     }
 
-    public Item[] getInventory() {
-        int counter = 0;
-        System.out.println(getName()+"'s Inventory:");
+    public boolean isArmourInteraction() {
+        return armourInteraction;
+    }
 
-        for (int i = 0; i < inventory.length; i++) {    
-            if (inventory[i] != null) {
-                System.out.println(inventory[i].getName()+" "+inventory[i].getDescription());
-                counter++;
-            }
-        }
-        if (counter == 0) {
-                System.out.println("Inventory empty!");
-        }
-        
-        return inventory;
+    public void setArmourInteraction(boolean armourInteraction) {
+        this.armourInteraction = armourInteraction;
     }
 }

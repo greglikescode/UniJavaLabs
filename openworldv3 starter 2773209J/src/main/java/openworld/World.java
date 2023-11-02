@@ -46,8 +46,8 @@ public class World {
             System.out.println("-------------------------------");
             System.out.println("TURN:" + turnTimer);
             System.out.println("-------------------------------");
-            this.getAdventurer().getInventory();
-            this.getAdventurer().getAttacks();
+            adventurer.getInventory();
+            adventurer.getAttacks();
             printWorld();
             adventurer.takeTurn();
             nonPlayerCharactersMove();
@@ -56,8 +56,10 @@ public class World {
             turnTimer++;
             if (getAdventurer().getLocation().getX() == 7 && getAdventurer().getLocation().getY() == 7) {
                 System.out.println("===== ADVENTURER REACHED GOAL =====");
+                setGameOver(true);     
+            } else if (getAdventurer().isConscious() != true){
+                System.out.println("===== You Died! =====");
                 setGameOver(true);
-                
             }
         }
         System.out.println("Game Over!");
@@ -208,6 +210,7 @@ public class World {
                 } else if (npc instanceof Wizard) {
                     npc = (Wizard) npc;
                     if (this.getAdventurer().isWizardInteraction()){
+                        getAdventurer().setWizardInteraction(false);
                         npc.encounter(traveller);
                     } else {
                         System.out.println(traveller.getName()+" did not choose to interact with "+npc.getName());
@@ -215,6 +218,7 @@ public class World {
                 } else if (npc instanceof Healer) {
                     npc = (Healer) npc;
                     if (this.getAdventurer().isHealerInteraction()){
+                        getAdventurer().setWizardInteraction(false);
                         npc.encounter(traveller);
                     } else {
                         System.out.println(traveller.getName()+" did not choose to interact with "+npc.getName());
@@ -222,10 +226,26 @@ public class World {
                 }
             }
         }
-        if (this.getAdventurer().isItemInteraction()) {
+        if (this.getAdventurer().isSwordInteraction() || this.getAdventurer().isArmourInteraction()) {
             ArrayList<Item> itemHere = getItemHere(traveller.getLocation());
                 for (Item item : itemHere) {
-                    item.encounter(traveller);
+                if (item instanceof Sword) {
+                    item = (Sword) item;
+                    if (this.getAdventurer().isSwordInteraction()){
+                        getAdventurer().setSwordInteraction(false);
+                        item.encounter(traveller);
+                    } else {
+                        System.out.println(traveller.getName()+" did not choose to interact with "+item.getName());
+                    }
+                } else if (item instanceof Armour) {
+                    item = (Armour) item;
+                    if (this.getAdventurer().isArmourInteraction()){
+                        getAdventurer().setArmourInteraction(false);
+                        item.encounter(traveller);
+                    } else {
+                        System.out.println(traveller.getName()+" did not choose to interact with "+item.getName());
+                    }
+                }
         }    
         }
     }
@@ -270,16 +290,19 @@ public class World {
         return itemHere;
     }
 
+    // location == skeleton traveller == adventurer
     public void battle(TravellingWorldEntity location, TravellingWorldEntity traveller) {
         System.out.println("----BATTLE-----");
         System.out.println(traveller.getName() + " is fighting " + location.getName());
-        System.out.println(location.toString());
-        System.out.println(traveller.toString());
+        System.out.println("location: "+location.toString());
+        System.out.println("traveller: "+traveller.toString());
 
         while (location.getCurrentHealth() > 0 && traveller.getCurrentHealth() > 0) {
-            location.attack(traveller);
+            System.out.println(location+"is attacking "+traveller);
+            location.attack(traveller,location);
             if (traveller.getCurrentHealth() > 0) {
-                traveller.attack(location);
+                System.out.println(traveller+"is attacking "+location);
+                traveller.attack(location,traveller);
             }
             System.out.println(location.toString());
             System.out.println(traveller.toString());
@@ -301,7 +324,8 @@ public class World {
         w.initaliseWorld();
         w.nonPlayerCharacters.add(new Healer("Dummy H", new Coordinates(0, 0), 15, w, new Damage(5, DamageType.PHYSICAL), w.randomCoordinates()));
         w.nonPlayerCharacters.add(new Wizard("Dummy W", new Coordinates(0, 0), 15, w, new Damage(5, DamageType.PHYSICAL), w.randomCoordinates()));
-        w.items.add(new Item("Dummy W", new Coordinates(0, 0), 5, w, new Damage(0, DamageType.PHYSICAL), "A sharp sword!", ItemType.WEAPON, 1));
+        w.items.add(new Sword("Dummy S", new Coordinates(0, 0), 5, w, new Damage(0, DamageType.PHYSICAL), "A sharp sword!", ItemType.WEAPON, 1,DamageType.PHYSICAL));
+        w.items.add(new Armour("Dummy A", new Coordinates(0, 0), 5, w, new Damage(0, DamageType.PHYSICAL), "Shiny Armour!", ItemType.ARMOUR, 2));
 
         w.run();
     }
@@ -384,18 +408,20 @@ public class World {
     private void generateItems() {
         int weaponCount = 0;
         int armourCount = 0;
-        int frequency = 7;
+        int frequency = 18;
         int countUp = 0;
         for (int x = 0; x <= xDimension; x++) {
             for (int y = 0; y <= yDimension; y++) {
                 countUp++;
                 if (countUp == frequency) {
                     if (weaponCount <= armourCount) {
-                        items.add(new Sword("Sword "+weaponCount, randomCoordinates(), 5, this, new Damage(0, DamageType.PHYSICAL), "A sharp sword!", ItemType.WEAPON, 1));
+                        items.add(new Sword(("Sword "+weaponCount), randomCoordinates(), 5, this,
+                         new Damage(0, DamageType.PHYSICAL), "A sharp sword!", ItemType.WEAPON, 1, DamageType.PHYSICAL));
                         weaponCount++;
                         countUp = 0;
                     } else {
-                        items.add(new Armour("Armour "+armourCount, randomCoordinates(), 5, this, new Damage(0, DamageType.PHYSICAL), "Shiny armour!", ItemType.ARMOUR, 2));
+                        items.add(new Armour("Armour "+armourCount, randomCoordinates(), 5, this,
+                         new Damage(0, DamageType.PHYSICAL), "Shiny armour!", ItemType.ARMOUR, 2));
                         armourCount++;
                         countUp = 0;
                     }
