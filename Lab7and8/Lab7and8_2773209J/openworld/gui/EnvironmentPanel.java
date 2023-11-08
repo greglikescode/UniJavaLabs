@@ -21,7 +21,13 @@ public class EnvironmentPanel extends JPanel implements ActionListener {
 		setBorder(new TitledBorder("Monster and NPC controls"));
 		
 		respawnButton = new JButton("Respawn all");
-		respawnButton.addActionListener(this);
+		respawnButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e){
+				System.out.println("Respawning enemies!!");
+				gameWorld.respawnWorld();
+			}
+		});
 		startButton = new JButton("Start moving");
 		startButton.addActionListener(this);
 		stopButton = new JButton("Stop moving");

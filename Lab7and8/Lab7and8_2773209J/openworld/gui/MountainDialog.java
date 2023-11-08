@@ -47,6 +47,7 @@ public class MountainDialog extends JDialog implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        // if yes return mountain else return null
         choice = (e.getSource() == yesButton) ? mountain : null;
         dispose();
     }

@@ -61,6 +61,12 @@ public class MovementAdapter extends KeyAdapter {
  
             MountainDialog dlg = new MountainDialog(gameWindow, mountain);
             dlg.setVisible(true);
+            if (dlg.getChoice() != null){
+                System.out.println("The Adventurer chose to explore the mountain!");
+                dlg.getChoice().explore(gameWorld.getAdventurer());
+            } else {
+                System.out.println("the Adventurer chose not to explore the mountain!");
+            }
        }
         gameWindow.getControlPanel().update();
     }

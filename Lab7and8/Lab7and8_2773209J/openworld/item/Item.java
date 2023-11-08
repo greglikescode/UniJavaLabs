@@ -22,22 +22,13 @@ public abstract class Item {
         return itemDescription;
     }
 
-
-
-
     public String getName() {
         return name;
     }
 
-
-
-
     public Adventurer getOwner() {
         return owner;
     }
-
-
-
 
     public String getItemDescription() {
         return itemDescription;

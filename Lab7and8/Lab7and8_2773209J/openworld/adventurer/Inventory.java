@@ -49,7 +49,7 @@ public class Inventory {
             System.out.println(startingIndex + ": " + consumable.getDescription());
             startingIndex++;
         }
-        System.out.println("EQUIPABLE ITEMS");
+        System.out.println("EQUIPPABLE ITEMS");
         for (EquippableItem equipables : equipableItems) {
             System.out.println(startingIndex + ": " + equipables.getDescription());
             startingIndex++;

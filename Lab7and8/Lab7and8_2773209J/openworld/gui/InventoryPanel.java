@@ -50,7 +50,7 @@ public class InventoryPanel extends JPanel implements ActionListener {
         }
 
         consumeList = createList(new ConsumableListModel(inventory));
-        add(addTitleAndScroll(consumeList, "Consumables"));
+        add(addTitleAndScroll(consumeList, "CONSUMABLES"));
         consumeButton = new JButton("Consume");
         consumeButton.addActionListener(this);
         add(consumeButton);
@@ -70,6 +70,23 @@ public class InventoryPanel extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        // e.getSource() corresponds to what button was clicked.
+        Object source = e.getSource();
+        int consumeSelected = (source == consumeButton) ? consumeList.getSelectedIndex() : -1;
+        try {
+            if (consumeSelected != -1){
+                inventory.useItem(consumeSelected);
+                System.out.println("Consumable was used!!!");
+            }
+        } catch (Exception error) {
+            System.out.println("You must have a consumable selected!!");
+        }
+        for (int i = 0; i < equipButtons.size(); i++) {
+            if (source == equipButtons.get(i)){
+                System.out.println("Equip button of index "+i+" was pressed");
+            }
+            
+        }
         updateLists();
         controlPanel.getAdventurerPanel().update();
     }
