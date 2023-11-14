@@ -16,6 +16,7 @@ import java.util.TimerTask;
 import javax.swing.JPanel;
 
 import openworld.World;
+import openworld.Coordinates;
 import openworld.adventurer.Adventurer;
 import openworld.characters.NPC;
 import openworld.monsters.Monster;

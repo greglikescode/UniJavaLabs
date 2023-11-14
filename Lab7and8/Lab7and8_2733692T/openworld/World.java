@@ -46,7 +46,7 @@ public class World {
             adventurer.takeTurn();
             nonPlayerCharactersMove();
             monsterMove();
-            System.out.println("Adventurer:"+ adventurer.toString());
+            System.out.println("Adventurer:" + adventurer.toString());
             turnTimer++;
         }
         System.out.println("Game Over!");
@@ -175,14 +175,10 @@ public class World {
             if (t instanceof Grasslands) {
                 t = (Grasslands) t;
                 t.encounter(traveller);
-            }
-            else if(t instanceof Mountain)
-            {
-                ((Mountain)t).encounter(traveller);
-            }
-            else if(t instanceof Volcano)
-            {
-                ((Volcano)t).encounter(traveller);
+            } else if (t instanceof Mountain) {
+                ((Mountain) t).encounter(traveller);
+            } else if (t instanceof Volcano) {
+                ((Volcano) t).encounter(traveller);
             }
         }
         List<Monster> monstersHere = getMonstersHere(traveller.getLocation());
@@ -280,24 +276,19 @@ public class World {
     }
 
     public void generateTerrain() {
-        int count=0;
+        int count = 0;
         for (int x = 0; x <= xDimension; x++) {
             for (int y = 0; y <= yDimension; y++) {
                 count++;
-                if (count%4==0)
-                {
-                  terrain.add(new Mountain("Mountain", new Coordinates(x, y), 1000, this,
-                        new Damage(0, DamageType.PHYSICAL)));  
-                }
-                else if (count%13==0)
-                {
+                if (count % 4 == 0) {
+                    terrain.add(new Mountain("Mountain", new Coordinates(x, y), 1000, this,
+                            new Damage(0, DamageType.PHYSICAL)));
+                } else if (count % 13 == 0) {
                     terrain.add(new Volcano("Volcano", new Coordinates(x, y), 1000, this,
-                        new Damage(0, DamageType.PHYSICAL)));
-                }
-                else
-                {
-                terrain.add(new Grasslands("Grasslands", new Coordinates(x, y), 1000, this,
-                        new Damage(0, DamageType.PHYSICAL)));
+                            new Damage(0, DamageType.PHYSICAL)));
+                } else {
+                    terrain.add(new Grasslands("Grasslands", new Coordinates(x, y), 1000, this,
+                            new Damage(0, DamageType.PHYSICAL)));
                 }
             }
         }

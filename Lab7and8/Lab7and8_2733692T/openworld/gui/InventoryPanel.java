@@ -87,6 +87,8 @@ public class InventoryPanel extends JPanel implements ActionListener {
                             EquippableItem swordSel = equipLists.get(type).getSelectedValue();
                             inventory.equipItem(swordSel);
                         case ARMOUR:
+                            EquippableItem armourSel = equipLists.get(type).getSelectedValue();
+                            inventory.equipItem(armourSel);
                     }
 
                 }

@@ -2,6 +2,7 @@ package openworld.gui;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 import openworld.Coordinates;
@@ -24,25 +25,32 @@ public class MovementAdapter extends KeyAdapter {
 
     @Override
     public void keyPressed(KeyEvent e) {
+        ArrayList options = gameWorld.getAdventurer().getLocation().findAllSafeMoves(gameWorld.getWorld());
         switch (e.getKeyCode()) {
             case KeyEvent.VK_UP:
-                moveAdventurer(Coordinates.NORTH_VECTOR);
+                if (options.contains(Coordinates.NORTH_VECTOR)) {
+                    moveAdventurer(Coordinates.NORTH_VECTOR);
+                }
                 break;
 
             case KeyEvent.VK_RIGHT:
-                moveAdventurer(Coordinates.EAST_VECTOR);
+                if (options.contains(Coordinates.EAST_VECTOR)) {
+                    moveAdventurer(Coordinates.EAST_VECTOR);
+                }
                 break;
 
             case KeyEvent.VK_DOWN:
-                moveAdventurer(Coordinates.SOUTH_VECTOR);
+                if (options.contains(Coordinates.SOUTH_VECTOR)) {
+                    moveAdventurer(Coordinates.SOUTH_VECTOR);
+                }
                 break;
 
             case KeyEvent.VK_LEFT:
-                moveAdventurer(Coordinates.WEST_VECTOR);
+                if (options.contains(Coordinates.WEST_VECTOR)) {
+                    moveAdventurer(Coordinates.WEST_VECTOR);
+                }
                 break;
         }
-        gameWorld.getWorld().monsterMove();
-        gameWorld.getWorld().nonPlayerCharactersMove();
     }
 
     public void moveAdventurer(Coordinates vector) {
