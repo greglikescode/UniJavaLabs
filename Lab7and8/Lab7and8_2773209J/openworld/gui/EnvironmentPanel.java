@@ -13,6 +13,7 @@ public class EnvironmentPanel extends JPanel implements ActionListener {
 	private GameWorld gameWorld;
 	
 	private JButton respawnButton, startButton, stopButton;
+	private boolean nonPlayerCharactersAreMoving = false;
 	
 	public EnvironmentPanel(GameWorld gameWorld) {
 		this.gameWorld = gameWorld;
@@ -40,6 +41,35 @@ public class EnvironmentPanel extends JPanel implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		Object source = e.getSource();
+		if (source.equals(startButton) || source.equals(stopButton)) {
+
+			// The loop for getting the monsters to move
+			Runnable MonsterLoop = () -> {
+				try {
+					// If start button is hit and monsters are NOT moving
+					// NOTE does not matter if it is the NPC's or the monsters.
+					if (source.equals(startButton) && !nonPlayerCharactersAreMoving) {
+						nonPlayerCharactersAreMoving = true;
+						// All NPC's and Monsters move every 1000 milliseconds (1 second)
+						while (nonPlayerCharactersAreMoving) {
+							System.out.println("All characters have started moving");
+							gameWorld.getWorld().nonPlayerCharactersMove();
+							gameWorld.getWorld().monsterMove();;
+							Thread.sleep(100);							
+						}
+					// If stop button is hit and monsters are moving
+					} else if (source.equals(stopButton) && nonPlayerCharactersAreMoving == true) {
+						nonPlayerCharactersAreMoving = false;
+					}
+				} catch (InterruptedException error) {
+					System.out.println(error);
+					Thread.currentThread().interrupt();
+				}
+			};
+			Thread t = new Thread(MonsterLoop);
+			t.start();
+		}
 	}
 
 	public void disableAll() {
