@@ -16,6 +16,7 @@ import openworld.terrain.Terrain;
 import openworld.terrain.Volcano;
 import openworld.entityTypes.TravellingWorldEntity;
 import openworld.entityTypes.WorldEntity;
+import openworld.gui.Sprite;
 import openworld.monsters.Blob;
 import openworld.monsters.Monster;
 import openworld.monsters.Skeleton;
@@ -257,8 +258,26 @@ public class World {
         }
         if (location.isConscious()) {
             System.out.println(location.getName().toUpperCase() + " IS VICTORIOUS");
+            System.out.println(traveller.getName()+"'s sprite is being changed to red!!");
+            if (traveller instanceof Monster){
+                System.out.println("the dead entity is a monster. Painting red!!!");
+                // CODE FOR CHANGING SPRITE TO RED FOR MONSTER GOES HERE
+            } else if (traveller instanceof NPC){
+                System.out.println("the dead entity is a NPC. Painting red!!!");
+                // CODE FOR CHANGING SPRITE TO RED FOR NPC GOES HERE
+            }
+            // Don't need to do for adventurer since the game will automatically end when they die!
         } else if (traveller.isConscious()) {
             System.out.println(traveller.getName().toUpperCase() + " IS VICTORIOUS");
+            System.out.println(location.getName()+"'s sprite is being changed to red!!");
+            if (location instanceof Monster){
+                System.out.println("the dead entity is a monster. Painting red!!!");
+                // CODE FOR CHANGING SPRITE TO RED FOR MONSTER GOES HERE
+            } else if (location instanceof NPC){
+                System.out.println("the dead entity is a NPC. Painting red!!!");
+                // CODE FOR CHANGING SPRITE TO RED FOR MONSTER GOES HERE
+            }
+            // Don't need to do for adventurer since the game will automatically end when they die!
         } else {
             System.out.println("Somehow no one is conscious - this should not happen!");
         }

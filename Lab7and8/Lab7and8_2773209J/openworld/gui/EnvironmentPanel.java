@@ -53,10 +53,9 @@ public class EnvironmentPanel extends JPanel implements ActionListener {
 						nonPlayerCharactersAreMoving = true;
 						// All NPC's and Monsters move every 1000 milliseconds (1 second)
 						while (nonPlayerCharactersAreMoving) {
-							System.out.println("All characters have started moving");
 							gameWorld.getWorld().nonPlayerCharactersMove();
 							gameWorld.getWorld().monsterMove();;
-							Thread.sleep(100);							
+							Thread.sleep(1000);							
 						}
 					// If stop button is hit and monsters are moving
 					} else if (source.equals(stopButton) && nonPlayerCharactersAreMoving == true) {

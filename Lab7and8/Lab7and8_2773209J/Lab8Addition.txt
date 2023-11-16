@@ -1,0 +1,7 @@
+IOOP Lab 8 Additon:
+
+I attempted to change the colour of a sprite once it was rendered unconscious, but did not manage to complete it.
+There are print outs that will be sent to the command window about when these colours would change. These may not be enough for partial mark
+but I would like to say i tried.
+
+- Gregor J
